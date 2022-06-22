@@ -14,9 +14,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+    
         rb = GetComponent<Rigidbody2D>();
         view = GetComponent<PhotonView>();
     }
+
 
     // Update is called once per frame
     void FixedUpdate()
