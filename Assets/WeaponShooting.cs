@@ -15,21 +15,25 @@ public class WeaponShooting : MonoBehaviour
     }
     private void OnParticleCollision(GameObject other)
     {
+        Debug.Log("particle collision");
         int collisionEventCount = particles.GetCollisionEvents(other, collisionEvents);
-        int i;
+        int i = 0;
         while(i < collisionEventCount)
         {
             Vector3 pos = collisionEvents[i].intersection;
             Vector3 normal = collisionEvents[i].normal;
             Quaternion rot = Quaternion.FromToRotation(Vector3.up,normal);
-            //SpawnCollisionParticles()
+            SpawnCollisionParticles(pos, rot);
             i++;
         }
         
     }
 
-    private void SpawnCollisionParticles(Vector3 location, float rotation)
+    private void SpawnCollisionParticles(Vector3 location, Quaternion rotation)
     {
-        Instantiate(collisionEffect, location, Quaternion.Euler(0f, 0f, rotation));
+        Vector3 ray = rotation * Vector3.up;
+        Debug.Log("hit");
+        Debug.DrawRay(location, ray, Color.green, 3);
+        Instantiate(collisionEffect, location, rotation);
     }
 }
