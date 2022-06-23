@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using System.Linq;
 
 public class GameManager : MonoBehaviourPunCallbacks
@@ -9,6 +10,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public List<GameObject> players = new List<GameObject>();
     [SerializeField] GameObject playerPrefab;
     PhotonView view;
+    float degreesPerPlayer;
+    float circleRadius;
+    GameObject myPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +24,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if(PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -36,54 +40,44 @@ public class GameManager : MonoBehaviourPunCallbacks
         int playerCount = players.Count;
         float requiredCircumference = playerCount * 5f;
         float circleRadius = requiredCircumference / (2 * Mathf.PI);
-        float degreesPerPlayer = 360f / playerCount;
-        float degreesSoFar = 0f;
+        degreesPerPlayer = 360f / playerCount;
         int index = 0;
-        foreach(GameObject currentPlayer in players)
+        foreach (GameObject currentPlayer in players)
         {
-            if(currentPlayer.GetComponent<PhotonView>().IsMine)
-            {
-                float thisPlayerX = Mathf.Cos(degreesSoFar) * circleRadius;
-                float thisPlayerY = Mathf.Sin(degreesSoFar) * circleRadius;
-                Vector3 newPos = new Vector3(thisPlayerX, thisPlayerY, 0f);
-                InitPlayer(currentPlayer, newPos);
-
-            }
-            degreesSoFar += degreesPerPlayer;
+            InitPlayer(currentPlayer);
             index++;
         }
     }
 
     void LobbySpawn()
     {
-        var playerObject = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
-        
+        myPlayer = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
+
     }
 
 
 
-    void InitPlayer(GameObject playerObject, Vector3 pos)
+    void InitPlayer(GameObject playerObject)
     {
-        if(playerObject.GetComponent<PhotonView>().IsMine)
+        if (playerObject.GetComponent<PhotonView>().IsMine)
         {
-            playerObject.transform.position = pos;
-            playerObject.transform.rotation = Quaternion.LookRotation(transform.forward, pos);
-            playerObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-            playerObject.GetComponent<Rigidbody2D>().angularVelocity = 0;
+            PlayerMovement movementScript = playerObject.GetComponent<PlayerMovement>();
+            float degreesSoFar = degreesPerPlayer * movementScript.playerIndex;
+            Debug.Log(degreesSoFar);
+            float thisPlayerX = Mathf.Cos(degreesSoFar) * circleRadius;
+            float thisPlayerY = Mathf.Sin(degreesSoFar) * circleRadius;
+            Vector3 newPos = new Vector3(thisPlayerX, thisPlayerY, 0f);
+
+            playerObject.transform.position = newPos;
+            playerObject.transform.rotation = Quaternion.LookRotation(transform.forward, newPos);
+            movementScript.StopMovement();
         }
-        
+
     }
 
-    [PunRPC]
-    void GetPlayerList()
+    public override void OnDisconnected(DisconnectCause cause)
     {
-        List<PlayerMovement> playerMovementScripts = FindObjectsOfType<PlayerMovement>().ToList();
-        foreach(PlayerMovement playerMovement in playerMovementScripts)
-        {
-            if(playerMovement.gameObject.GetComponent<PhotonView>().IsMine)
-            {
-                
-            }
-        }
+        players.Remove(myPlayer);
     }
+
 }

@@ -14,7 +14,8 @@ public class Asteroid : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+    //Update is called once per frame
+    private void Update()
     {
         
     }

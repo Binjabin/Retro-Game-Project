@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
+using Photon;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks
 {
@@ -11,10 +13,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     float rotation;
     PhotonView view;
     [SerializeField] SpriteRenderer visuals;
+    public float playerIndex;
 
     void Start()
     {
         FindObjectOfType<GameManager>().players.Add(gameObject);
+        playerIndex = PhotonNetwork.CurrentRoom.PlayerCount;
         rb = GetComponent<Rigidbody2D>();
         view = GetComponent<PhotonView>();
     }
@@ -62,5 +66,13 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         //update energy bar ui with energy value
     }
 
+    public void StopMovement()
+    {
+        thrustSpeed = 0f;
+        turnSpeed = 0f;
+        rb.angularVelocity = 0f;
+        rb.velocity = Vector2.zero;
+
+    }
 
 }

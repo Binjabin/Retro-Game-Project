@@ -135,6 +135,7 @@ MonoBehaviour:
   turnSpeed: 300
   thrustSpeed: 500
   visuals: {fileID: 8574563384297500616}
+  playerIndex: 0
 --- !u!60 &8574563384314159614
 PolygonCollider2D:
   m_ObjectHideFlags: 0
