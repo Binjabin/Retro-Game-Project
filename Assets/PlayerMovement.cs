@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPunCallbacks
 {
     [SerializeField] float turnSpeed = 1f;
     [SerializeField] float thrustSpeed = 1f;
@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-    
+        FindObjectOfType<GameManager>().players.Add(gameObject);
         rb = GetComponent<Rigidbody2D>();
         view = GetComponent<PhotonView>();
     }
@@ -48,4 +48,19 @@ public class PlayerMovement : MonoBehaviour
             transform.eulerAngles -= new Vector3(0f, 0f, turnSpeed * Time.fixedDeltaTime);
         }
     }
+    void DoWeaponry()
+    {
+        //if mouse button pressed:
+            //if energy is more than 0:
+                //turn particle system on
+            //else:
+                //turn particle system off
+        //else 
+            //turn particle system off
+
+
+        //update energy bar ui with energy value
+    }
+
+
 }

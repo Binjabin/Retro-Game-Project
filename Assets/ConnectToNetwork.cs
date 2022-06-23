@@ -8,6 +8,11 @@ using UnityEngine.SceneManagement;
 public class ConnectToNetwork : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
+    private void Awake()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+    }
+
     void Start()
     {
         ConnectToMaster();
@@ -46,4 +51,6 @@ public class ConnectToNetwork : MonoBehaviourPunCallbacks
         Debug.Log("Successfully joined room.");
         PhotonNetwork.LoadLevel("Game Scene");
     }
+
+    
 }
