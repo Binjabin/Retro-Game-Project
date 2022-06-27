@@ -4,9 +4,11 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Photon;
-
+using Cinemachine;
+using TMPro;
 public class PlayerMovement : MonoBehaviourPunCallbacks
 {
+    [SerializeField] TMP_Text usernameText;
     [SerializeField] float turnSpeed = 1f;
     [SerializeField] float thrustSpeed = 1f;
     Rigidbody2D rb;
@@ -15,15 +17,28 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     [SerializeField] SpriteRenderer visuals;
     public float playerIndex;
     GameManager gameManager;
+
+
     void Start()
     {
-
+        
         gameManager = FindObjectOfType<GameManager>();
         gameManager.players.Add(gameObject);
         rb = GetComponent<Rigidbody2D>();
         view = GetComponent<PhotonView>();
+        if(view.IsMine)
+        {
+            SetUpCamera();
+        }
+        usernameText.text = view.Owner.NickName;
     }
 
+    void SetUpCamera()
+    {
+        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
+        vcam.LookAt = transform;
+        vcam.Follow = transform;
+    }
 
     // Update is called once per frame
     void FixedUpdate()

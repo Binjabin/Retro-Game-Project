@@ -4,9 +4,12 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
-
+using TMPro;
 public class ConnectToNetwork : MonoBehaviourPunCallbacks
 {
+    [SerializeField] GameObject joinButton;
+    [SerializeField] GameObject loadingText;
+    [SerializeField] TMP_InputField usernameInput;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -15,15 +18,15 @@ public class ConnectToNetwork : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        DoConnectingUI();
         ConnectToMaster();
-        
     }
 
     // Update is called once per frame
     public override void OnConnectedToMaster()
     {
         Debug.Log("Connected to master! Joining room.");
-        PhotonNetwork.JoinRandomRoom();
+        DoConnectedUI();
     }
 
     public void ConnectToMaster()
@@ -35,8 +38,8 @@ public class ConnectToNetwork : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("Already connected. Joining room.");
-            PhotonNetwork.JoinRandomRoom();
+            Debug.Log("Already connected.");
+            DoConnectedUI();
         }
     }
 
@@ -52,5 +55,29 @@ public class ConnectToNetwork : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("Game Scene");
     }
 
-    
+    void DoConnectedUI()
+    {
+        loadingText.SetActive(false);
+        joinButton.SetActive(true);
+    }
+    void DoConnectingUI()
+    {
+        loadingText.SetActive(true);
+        joinButton.SetActive(false);
+    }
+    public void JoinAnyRoom()
+    {
+        PhotonNetwork.JoinRandomRoom();
+        if (usernameInput.text != null)
+        {
+            PhotonNetwork.NickName = usernameInput.text;
+        }
+        else
+        {
+
+        }
+        
+        DoConnectingUI();
+
+    }
 }
