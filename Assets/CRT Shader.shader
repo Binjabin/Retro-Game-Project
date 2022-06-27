@@ -89,7 +89,7 @@ Shader "Custom/CRT"
             res *= dotMaskWeights;
 
             return float4(pow(res, float3(1.0f / _OutputGamma, 1.0f / _OutputGamma, 1.0f / _OutputGamma)), 1.0f);
-
+            //return float4(0, 0, 0, 1);
 
         }
 

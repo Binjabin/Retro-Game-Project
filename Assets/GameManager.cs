@@ -29,22 +29,19 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Start Game");
-                view.RPC("StartGame", RpcTarget.All);
+                StartGame();
             }
         }
     }
-    [PunRPC]
+    
     void StartGame()
     {
-
-        int playerCount = players.Count;
-        float requiredCircumference = playerCount * 5f;
-        float circleRadius = requiredCircumference / (2 * Mathf.PI);
-        degreesPerPlayer = 360f / playerCount;
         int index = 0;
+        PhotonNetwork.CurrentRoom.IsOpen = false;
         foreach (GameObject currentPlayer in players)
         {
-            InitPlayer(currentPlayer);
+            var currentPlayerView = currentPlayer.GetComponent<PhotonView>();
+            currentPlayerView.RPC("InitPlayer", currentPlayerView.Owner, index);
             index++;
         }
     }
@@ -56,28 +53,27 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-
-    void InitPlayer(GameObject playerObject)
+    public float GetSpawnCircleRadius()
     {
-        if (playerObject.GetComponent<PhotonView>().IsMine)
-        {
-            PlayerMovement movementScript = playerObject.GetComponent<PlayerMovement>();
-            float degreesSoFar = degreesPerPlayer * movementScript.playerIndex;
-            Debug.Log(degreesSoFar);
-            float thisPlayerX = Mathf.Cos(degreesSoFar) * circleRadius;
-            float thisPlayerY = Mathf.Sin(degreesSoFar) * circleRadius;
-            Vector3 newPos = new Vector3(thisPlayerX, thisPlayerY, 0f);
-
-            playerObject.transform.position = newPos;
-            playerObject.transform.rotation = Quaternion.LookRotation(transform.forward, newPos);
-            movementScript.StopMovement();
-        }
-
+        int playerCount = players.Count;
+        float requiredCircumference = playerCount * 5f;
+        return requiredCircumference / (2 * Mathf.PI);
     }
+
+    public float GetRadPerPlayer()
+    {
+        int playerCount = players.Count;
+        float radPerCicrle = 360f * Mathf.Deg2Rad;
+        return  radPerCicrle / playerCount;
+    }
+
+
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         players.Remove(myPlayer);
     }
+
+
 
 }
