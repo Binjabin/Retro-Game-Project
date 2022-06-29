@@ -277,9 +277,9 @@ GameObject:
   - component: {fileID: 8574563384314159615}
   - component: {fileID: 8574563384314159614}
   - component: {fileID: 8574563384314159608}
-  - component: {fileID: 1847438881986960982}
-  - component: {fileID: 4721215811993081940}
-  - component: {fileID: 5192072196963143139}
+  - component: {fileID: 8324734248935772873}
+  - component: {fileID: 1495778357575004799}
+  - component: {fileID: 656378875872946412}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -371,7 +371,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &1847438881986960982
+--- !u!114 &8324734248935772873
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -380,22 +380,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8574563384314159612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Script: {fileID: 11500000, guid: e2719fd3cd55a524d93daff54f9c48cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents:
-  - {fileID: 4721215811993081940}
-  - {fileID: 5192072196963143139}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &4721215811993081940
+  _interpolationDataSource: 0
+--- !u!114 &1495778357575004799
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -404,14 +393,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8574563384314159612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
---- !u!114 &5192072196963143139
+  ObjectInterest: 0
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 1
+  AoiPositionSource: {fileID: 0}
+  Flags: 2305
+  NetworkGuid:
+    RawGuidValue: 4a4f7d87fcc529f4ba39c0fdd9fcb43f
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 8324734248935772873}
+  - {fileID: 656378875872946412}
+  SimulationBehaviours: []
+--- !u!114 &656378875872946412
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -420,13 +418,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8574563384314159612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Script: {fileID: -1779252708, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 0
-  m_TeleportIfDistanceGreaterThan: 3
+  _interpolationDataSource: 0
+  InterpolationSpace: 0
+  InterpolationTarget: {fileID: 8574563384297500617}
+  InterpolateErrorCorrection: 1
+  InterpolatedErrorCorrectionSettings:
+    MinRate: 3.3
+    MaxRate: 10
+    PosBlendStart: 0.25
+    PosBlendEnd: 1
+    PosMinCorrection: 0.025
+    PosTeleportDistance: 2
+    RotBlendStart: 0.1
+    RotBlendEnd: 0.5
+    RotTeleportRadians: 1.5
 --- !u!1 &8574563384688369889
 GameObject:
   m_ObjectHideFlags: 0
