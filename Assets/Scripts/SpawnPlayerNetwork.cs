@@ -9,6 +9,8 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] NetworkPlayer playerPrefab;
 
+    PlayerMovement localPlayerMovement;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,9 +37,89 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if(runner.IsServer)
+        if (runner.IsServer)
         {
-            Debug.Log("");
+            Debug.Log("Another Player Joined. Spawning Player");
+            runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, player);
         }
+        else Debug.Log("A player joined");
+    }
+
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+        if(localPlayerMovement == null && NetworkPlayer.Local != null)
+        {
+            localPlayerMovement = NetworkPlayer.Local.GetComponent<PlayerMovement>();
+        }
+
+        if(localPlayerMovement != null)
+        {
+            input.Set(localPlayerMovement.GetNetworkInput());
+        }
+    }
+
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+        Debug.Log("Shut Down");
+    }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner)
+    {
+        Debug.Log("Disconnected");
+    }
+
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        Debug.Log("Connect Request");
+    }
+
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        Debug.Log("Failed to connect");
+    }
+
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void OnSceneLoadStart(NetworkRunner runner)
+    {
+        //throw new NotImplementedException();
     }
 }

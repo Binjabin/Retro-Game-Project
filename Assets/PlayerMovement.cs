@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 using TMPro;
-public class PlayerMovement : MonoBehaviour
+using Fusion;
+public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] TMP_Text usernameText;
     [SerializeField] float turnSpeed = 1f;
@@ -13,53 +13,58 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] SpriteRenderer visuals;
     public float playerIndex;
     GameManager gameManager;
-
+    bool thrusting;
+    float turnDirection;
 
     void Start()
     {
         
-        gameManager = FindObjectOfType<GameManager>();
-        gameManager.players.Add(gameObject);
+        //gameManager = FindObjectOfType<GameManager>();
+        //gameManager.players.Add(gameObject);
         rb = GetComponent<Rigidbody2D>();
-        if(true)//view.IsMine)
-        {
-            SetUpCamera();
-        }
     }
 
-    void SetUpCamera()
-    {
-        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        vcam.LookAt = transform;
-        vcam.Follow = transform;
-    }
+    
 
-    // Update is called once per frame
-    void FixedUpdate()
+    public override void FixedUpdateNetwork()
     {
-        if (true)//view.IsMine)
+        if(GetInput(out NetworkInputData data))
         {
-            DoMovement();
+            thrusting = data.thrusting;
+            turnDirection = data.turnInput;
         }
-        else
-        {
-            visuals.color = Color.red;
-        }
+        GetLocalInput();
+        
+        DoMovement();
 
     }
     void DoMovement()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (thrusting)
         {
             rb.AddForce(transform.up * Time.fixedDeltaTime * thrustSpeed);
         }
-        if (Input.GetKey(KeyCode.A))
+        transform.eulerAngles += new Vector3(0f, 0f, turnSpeed * Time.fixedDeltaTime * turnDirection);
+    }
+
+    void GetLocalInput()
+    {
+        thrusting = Input.GetKey(KeyCode.W);
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
         {
-            transform.eulerAngles += new Vector3(0f, 0f, turnSpeed * Time.fixedDeltaTime);
+            turnDirection = 0;
         }
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.A))
         {
-            transform.eulerAngles -= new Vector3(0f, 0f, turnSpeed * Time.fixedDeltaTime);
+            turnDirection = 1;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            turnDirection = -1;
+        }
+        else
+        {
+            turnDirection = 0;
         }
     }
     void DoWeaponry()
@@ -100,6 +105,15 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log(degreesSoFar);
         movementScript.StopMovement();
 
+    }
+
+    public NetworkInputData GetNetworkInput()
+    {
+        NetworkInputData networkInputData = new NetworkInputData();
+        networkInputData.thrusting = thrusting;
+        networkInputData.turnInput = turnDirection;
+
+        return networkInputData;
     }
 
 }

@@ -316,6 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49a6c7903ca01f842954b61a44c421b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
   usernameText: {fileID: 4023357764065846}
   turnSpeed: 300
   thrustSpeed: 500
@@ -406,6 +407,7 @@ MonoBehaviour:
     RawGuidValue: 4a4f7d87fcc529f4ba39c0fdd9fcb43f
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 8574563384314159615}
   - {fileID: 8324734248935772873}
   - {fileID: 656378875872946412}
   SimulationBehaviours: []

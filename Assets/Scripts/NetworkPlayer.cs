@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Cinemachine;
 
 public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 {
@@ -12,6 +13,13 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
     }
 
+    void SetUpCamera()
+    {
+        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
+        vcam.LookAt = transform;
+        vcam.Follow = transform;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -20,15 +28,17 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public override void Spawned()
     {
-        if(Object.HasInputAuthority)
+        if (Object.HasInputAuthority)
         {
             Local = this;
+            SetUpCamera();
             Debug.Log("Spawn own ship");
         }
         else
         {
             Debug.Log("Spawn other ship");
         }
+
     }
 
     public void PlayerLeft(PlayerRef player)
