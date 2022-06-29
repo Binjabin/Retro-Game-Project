@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         {
             SetUpCamera();
         }
-        usernameText.text = view.Owner.NickName;
     }
 
     void SetUpCamera()
@@ -96,6 +95,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         var playerObject = gameObject;
         PlayerMovement movementScript = playerObject.GetComponent<PlayerMovement>();
+        FindObjectOfType<Border>().Radius = gameManager.GetSpawnCircleRadius() + 4;
         float degreesSoFar = gameManager.GetRadPerPlayer() * index;
         float thisPlayerX = Mathf.Cos(degreesSoFar) * gameManager.GetSpawnCircleRadius();
         float thisPlayerY = Mathf.Sin(degreesSoFar) * gameManager.GetSpawnCircleRadius();

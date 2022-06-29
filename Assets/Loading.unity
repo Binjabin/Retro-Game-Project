@@ -308,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joinButton: {fileID: 2063414410}
   loadingText: {fileID: 192667984}
-  usernameInput: {fileID: 0}
+  usernameInput: {fileID: 679503402}
 --- !u!4 &465859883
 Transform:
   m_ObjectHideFlags: 0

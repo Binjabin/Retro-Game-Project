@@ -74,7 +74,7 @@ public class ConnectToNetwork : MonoBehaviourPunCallbacks
         }
         else
         {
-
+            PhotonNetwork.NickName = "Guest";
         }
         
         DoConnectingUI();
