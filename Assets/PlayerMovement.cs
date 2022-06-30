@@ -24,17 +24,19 @@ public class PlayerMovement : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    
+    private void Update()
+    {
+        GetLocalInput();
+    }
 
     public override void FixedUpdateNetwork()
     {
         if(GetInput(out NetworkInputData data))
         {
-            thrusting = data.thrusting;
-            turnDirection = data.turnInput;
+            thrusting = data.thrustingNet;
+            turnDirection = data.turnInputNet;
+            //Debug.Log("Getting input from network!");
         }
-        GetLocalInput();
-        
         DoMovement();
 
     }
@@ -50,6 +52,7 @@ public class PlayerMovement : NetworkBehaviour
     void GetLocalInput()
     {
         thrusting = Input.GetKey(KeyCode.W);
+        Debug.Log(thrusting + " " + turnDirection + " from get local input");
         if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
         {
             turnDirection = 0;
@@ -57,10 +60,12 @@ public class PlayerMovement : NetworkBehaviour
         else if (Input.GetKey(KeyCode.A))
         {
             turnDirection = 1;
+           
         }
         else if (Input.GetKey(KeyCode.D))
         {
             turnDirection = -1;
+           
         }
         else
         {
@@ -109,9 +114,10 @@ public class PlayerMovement : NetworkBehaviour
 
     public NetworkInputData GetNetworkInput()
     {
+        Debug.Log("sending" + thrusting + " " + turnDirection + " from get net input");
         NetworkInputData networkInputData = new NetworkInputData();
-        networkInputData.thrusting = thrusting;
-        networkInputData.turnInput = turnDirection;
+        networkInputData.thrustingNet = thrusting;
+        networkInputData.turnInputNet = turnDirection;
 
         return networkInputData;
     }

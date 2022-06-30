@@ -47,6 +47,7 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        
         if(localPlayerMovement == null && NetworkPlayer.Local != null)
         {
             localPlayerMovement = NetworkPlayer.Local.GetComponent<PlayerMovement>();
@@ -55,6 +56,7 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
         if(localPlayerMovement != null)
         {
             input.Set(localPlayerMovement.GetNetworkInput());
+            //Debug.Log("Sending Input " + localPlayerMovement.GetNetworkInput().thrusting);
         }
     }
 

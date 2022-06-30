@@ -5,6 +5,6 @@ using Fusion;
 
 public struct NetworkInputData : INetworkInput
 {
-    public bool thrusting;
-    public float turnInput;
+    public bool thrustingNet;
+    public float turnInputNet;
 }
