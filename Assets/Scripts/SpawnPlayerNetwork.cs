@@ -9,7 +9,7 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] NetworkPlayer playerPrefab;
 
-    PlayerMovement localPlayerMovement;
+    PlayerInputHandler localPlayerInput;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,7 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
         if(runner.Topology == SimulationConfig.Topologies.Shared)
         {
             Debug.Log("Connected to server, starting player as local player.");
-            runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, runner.LocalPlayer);
+            
         }
         else
         {
@@ -48,15 +48,15 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         
-        if(localPlayerMovement == null && NetworkPlayer.Local != null)
+        if(localPlayerInput == null && NetworkPlayer.Local != null)
         {
-            localPlayerMovement = NetworkPlayer.Local.GetComponent<PlayerMovement>();
+            localPlayerInput = NetworkPlayer.Local.GetComponent<PlayerInputHandler>();
         }
 
-        if(localPlayerMovement != null)
+        if(localPlayerInput != null)
         {
-            input.Set(localPlayerMovement.GetNetworkInput());
-            //Debug.Log("Sending Input " + localPlayerMovement.GetNetworkInput().thrusting);
+            input.Set(localPlayerInput.GetNetworkInput());
+            //Debug.Log("Sending Input " + localPlayerInput.GetNetworkInput().thrusting);
         }
     }
 
@@ -124,4 +124,10 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
     {
         //throw new NotImplementedException();
     }
+
+    public void SpawnLocalPlayer(NetworkRunner runner)
+    {
+        runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, runner.LocalPlayer);
+    }
+
 }

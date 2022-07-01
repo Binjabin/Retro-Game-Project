@@ -24,10 +24,6 @@ public class PlayerMovement : NetworkBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
-    {
-        GetLocalInput();
-    }
 
     public override void FixedUpdateNetwork()
     {
@@ -49,29 +45,12 @@ public class PlayerMovement : NetworkBehaviour
         transform.eulerAngles += new Vector3(0f, 0f, turnSpeed * Time.fixedDeltaTime * turnDirection);
     }
 
-    void GetLocalInput()
+    public void SetInputData(bool inThrusting, float inTurn)
     {
-        thrusting = Input.GetKey(KeyCode.W);
-        Debug.Log(thrusting + " " + turnDirection + " from get local input");
-        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
-        {
-            turnDirection = 0;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            turnDirection = 1;
-           
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            turnDirection = -1;
-           
-        }
-        else
-        {
-            turnDirection = 0;
-        }
+        thrusting = inThrusting;
+        turnDirection = inTurn;
     }
+
     void DoWeaponry()
     {
         //if mouse button pressed:
@@ -112,14 +91,6 @@ public class PlayerMovement : NetworkBehaviour
 
     }
 
-    public NetworkInputData GetNetworkInput()
-    {
-        Debug.Log("sending" + thrusting + " " + turnDirection + " from get net input");
-        NetworkInputData networkInputData = new NetworkInputData();
-        networkInputData.thrustingNet = thrusting;
-        networkInputData.turnInputNet = turnDirection;
-
-        return networkInputData;
-    }
+    
 
 }

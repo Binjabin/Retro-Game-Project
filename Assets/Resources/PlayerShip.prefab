@@ -280,6 +280,7 @@ GameObject:
   - component: {fileID: 8324734248935772873}
   - component: {fileID: 1495778357575004799}
   - component: {fileID: 656378875872946412}
+  - component: {fileID: 8274912620539561240}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -347,10 +348,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.2}
+    - - {x: -0.015, y: 0.15}
       - {x: -0.145, y: -0.195}
       - {x: 0, y: -0.145}
       - {x: 0.145, y: -0.195}
+      - {x: 0.015, y: 0.15}
 --- !u!50 &8574563384314159608
 Rigidbody2D:
   serializedVersion: 4
@@ -437,6 +439,18 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
+--- !u!114 &8274912620539561240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8574563384314159612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb8c73fcbec41d4ba8e61328a4cd004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8574563384688369889
 GameObject:
   m_ObjectHideFlags: 0

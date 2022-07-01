@@ -14,8 +14,7 @@ public class WeaponShooting : MonoBehaviour
         particles = GetComponent<ParticleSystem>();
     }
     private void OnParticleCollision(GameObject other)
-    {
-        Debug.Log("particle collision");
+    {;
         int collisionEventCount = particles.GetCollisionEvents(other, collisionEvents);
         int i = 0;
         while(i < collisionEventCount)
@@ -32,7 +31,6 @@ public class WeaponShooting : MonoBehaviour
     private void SpawnCollisionParticles(Vector3 location, Quaternion rotation)
     {
         Vector3 ray = rotation * Vector3.up;
-        Debug.Log("hit");
         Debug.DrawRay(location, ray, Color.green, 3);
         Instantiate(collisionEffect, location, rotation);
     }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8281287375374436175}
   - component: {fileID: 8281287375374436161}
   - component: {fileID: 8281287375374436174}
-  - component: {fileID: 82945365308187192}
   m_Layer: 6
   m_Name: CollisionEffect
   m_TagString: Untagged
@@ -4872,15 +4871,3 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &82945365308187192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8281287375374436172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ff922e78c623934496de73611c9e2ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
