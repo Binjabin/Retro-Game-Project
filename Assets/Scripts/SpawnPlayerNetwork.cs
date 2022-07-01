@@ -5,7 +5,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 
-public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
+public class SpawnPlayerNetwork : SimulationBehaviour, INetworkRunnerCallbacks, IPlayerJoined, IPlayerLeft
 {
     [SerializeField] NetworkPlayer playerPrefab;
 
@@ -33,6 +33,15 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("Connected");
         }
+    }
+
+    public void PlayerJoined(PlayerRef player)
+    {
+        Runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, player);
+    }
+    public void PlayerLeft(PlayerRef player)
+    {
+
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -125,9 +134,7 @@ public class SpawnPlayerNetwork : MonoBehaviour, INetworkRunnerCallbacks
         //throw new NotImplementedException();
     }
 
-    public void SpawnLocalPlayer(NetworkRunner runner)
-    {
-        runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, runner.LocalPlayer);
-    }
+    
+
 
 }
