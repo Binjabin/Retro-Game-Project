@@ -57,16 +57,7 @@ public class SpawnPlayerNetwork : SimulationBehaviour, INetworkRunnerCallbacks, 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         
-        if(localPlayerInput == null && NetworkPlayer.Local != null)
-        {
-            localPlayerInput = NetworkPlayer.Local.GetComponent<PlayerInputHandler>();
-        }
-
-        if(localPlayerInput != null)
-        {
-            input.Set(localPlayerInput.GetNetworkInput());
-            //Debug.Log("Sending Input " + localPlayerInput.GetNetworkInput().thrusting);
-        }
+        
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -134,7 +125,6 @@ public class SpawnPlayerNetwork : SimulationBehaviour, INetworkRunnerCallbacks, 
         //throw new NotImplementedException();
     }
 
-    
 
 
 }

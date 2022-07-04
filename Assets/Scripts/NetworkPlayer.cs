@@ -31,7 +31,8 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
-            SetUpCamera();
+            NetworkManager.Instance.SetUpPlayer()
+            //SetUpCamera();
             Debug.Log("Spawn own ship");
         }
         else

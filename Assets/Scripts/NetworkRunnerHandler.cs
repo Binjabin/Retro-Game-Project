@@ -32,22 +32,6 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private async void InitialiseNetworkRunnerForAny(NetworkRunner runner, GameMode gameMode, NetAddress address,  Action<NetworkRunner> initialized)
     {
-        var sceneObjectProvider = runner.GetComponents(typeof(MonoBehaviour)).OfType<INetworkSceneManager>().FirstOrDefault();
-        if (sceneObjectProvider == null)
-        {
-            sceneObjectProvider = runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
-        }
-
-        runner.ProvideInput = true;
-
-        await runner.StartGame(new StartGameArgs
-        {
-            GameMode = gameMode,
-            Address = address,
-            Initialized = initialized,
-            SceneManager = sceneObjectProvider
-        });
-
-        runner.SetActiveScene("Game Scene");
+        
     }
 }
