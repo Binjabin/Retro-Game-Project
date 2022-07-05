@@ -4,9 +4,11 @@ using UnityEngine;
 using Fusion;
 using Cinemachine;
 
-public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
+public class NetworkPlayer : NetworkBehaviour
 {
     public static NetworkPlayer Local { get; set; }
+    [SerializeField] public PlayerMovement playerPrefab;
+    [Networked] public NetworkString<_32> Name { get; set; }
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +33,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
-            NetworkManager.Instance.SetUpPlayer()
+            NetworkManager.Instance.SetUpPlayer(Object.InputAuthority, this);
             //SetUpCamera();
             Debug.Log("Spawn own ship");
         }

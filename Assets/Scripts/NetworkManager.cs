@@ -4,15 +4,23 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using System;
+using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(NetworkSceneManagerBase))]
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     NetworkRunner networkRunner;
     Dictionary<PlayerRef, NetworkPlayer> players = new Dictionary<PlayerRef, NetworkPlayer>();
     [SerializeField] NetworkPlayer networkPlayerPrefab;
+    [SerializeField] private NetworkSession sessionPrefab;
     PlayerInputHandler localPlayerInput;
     public static NetworkManager instance;
     NetworkSession session;
+    NetworkSceneManagerBase loader;
+    string currentLobbyID;
+
+    public bool IsMaster => networkRunner != null && (networkRunner.IsServer || networkRunner.IsSharedModeMasterClient);
 
     public static NetworkManager Instance
     {
@@ -26,15 +34,37 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public NetworkSession Session
     {
-        get => _session;
-        set { _session = value; _session.transform.SetParent(_runner.transform); }
+        get => session;
+        set
+        {
+            session = value;
+            session.transform.SetParent(networkRunner.transform);
+        }
     }
-
-    public void Awake()
+    private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else if (loader == null)
+        {
+            loader = GetComponent<NetworkSceneManagerBase>();
 
+            DontDestroyOnLoad(gameObject);
+            SceneManager.LoadSceneAsync("Loading");
+        }
     }
-    
+
+    public void Start()
+    {
+        EnterLobby("MainLobby");
+    }
+
     public void Connect()
     {
         if(networkRunner == null)
@@ -55,21 +85,13 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log("Set Up Player");
         players[playerRef] = player;
         player.transform.SetParent(networkRunner.transform);
-        if (Session.Map != null)
-        { // Late join
-            Session.Map.SpawnAvatar(player, true);
-        }
+        Debug.Log(player);
+        Session.Map.SpawnAvatar(player);
     }
 
     public void StartSession()
     {
         Connect();
-
-        var sceneObjectProvider = networkRunner.GetComponents(typeof(MonoBehaviour)).OfType<INetworkSceneManager>().FirstOrDefault();
-        if (sceneObjectProvider == null)
-        {
-            sceneObjectProvider = networkRunner.gameObject.AddComponent<NetworkSceneManagerDefault>();
-        }
 
         networkRunner.ProvideInput = true;
 
@@ -78,11 +100,21 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = GameMode.AutoHostOrClient,
             Address = NetAddress.Any(),
             Initialized = null,
-            SceneManager = sceneObjectProvider
+            SceneManager = loader
         }) ;
+    }
 
 
 
+    public async Task EnterLobby(string lobbyID)
+    {
+        Connect();
+        currentLobbyID = lobbyID;
+        var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, currentLobbyID);
+        if(!result.Ok)
+        {
+            Debug.LogError("Failed To Connect To Lobby");
+        }
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
@@ -101,11 +133,19 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        Debug.Log("A player has joined");
+        if (session == null && IsMaster)
         {
-            Debug.Log("Another Player Joined. Spawning Player");
+            Debug.Log("Spawning world");
+            session = runner.Spawn(sessionPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        if (runner.IsServer || runner.Topology == SimulationConfig.Topologies.Shared && player == runner.LocalPlayer)
+        {
+            Debug.Log("Spawning player");
             runner.Spawn(networkPlayerPrefab, Vector3.zero, Quaternion.identity, player);
         }
+
         else Debug.Log("A player joined");
     }
 
