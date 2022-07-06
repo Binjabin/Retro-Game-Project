@@ -5,15 +5,24 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    
-    // Start is called before the first frame update
-    void Start()
+
+    [SerializeField] GameObject loadingScreen;
+    [SerializeField] GameObject joinMenu;
+
+    private void Start()
     {
-        
+        loadingScreen.SetActive(true);
+        joinMenu.SetActive(false);
     }
 
     public void JoinRandomGame()
     {
         NetworkManager.instance.StartSession();
+    }
+
+    public void OpenJoinMenu()
+    {
+        joinMenu.SetActive(true);
+        loadingScreen.SetActive(false);
     }
 }

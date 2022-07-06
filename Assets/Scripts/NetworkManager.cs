@@ -11,12 +11,16 @@ using UnityEngine.SceneManagement;
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     NetworkRunner networkRunner;
+
+
     Dictionary<PlayerRef, NetworkPlayer> players = new Dictionary<PlayerRef, NetworkPlayer>();
+    public ICollection<NetworkPlayer> Players => players.Values;
+
     [SerializeField] NetworkPlayer networkPlayerPrefab;
     [SerializeField] private NetworkSession sessionPrefab;
     PlayerInputHandler localPlayerInput;
     public static NetworkManager instance;
-    NetworkSession session;
+    private NetworkSession session;
     NetworkSceneManagerBase loader;
     string currentLobbyID;
 
@@ -37,6 +41,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         get => session;
         set
         {
+            Debug.Log("Session was assigned to");
             session = value;
             session.transform.SetParent(networkRunner.transform);
         }
@@ -62,7 +67,15 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void Start()
     {
-        EnterLobby("MainLobby");
+        ConnectToMainLobby();
+    }
+
+    public async void ConnectToMainLobby()
+    {
+        Debug.Log("Connecting to lobby");
+        await EnterLobby("MainLobby");
+        Debug.Log("Connected");
+        FindObjectOfType<MainMenu>().OpenJoinMenu();
     }
 
     public void Connect()
@@ -82,11 +95,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void SetUpPlayer(PlayerRef playerRef, NetworkPlayer player)
     {
-        Debug.Log("Set Up Player");
         players[playerRef] = player;
         player.transform.SetParent(networkRunner.transform);
         Debug.Log(player);
-        Session.Map.SpawnAvatar(player);
+        if(session.Map != null)
+        {
+            Debug.Log("spawning player avater");
+            Session.Map.SpawnAvatar(player);
+        }
     }
 
     public void StartSession()
@@ -97,6 +113,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         networkRunner.StartGame(new StartGameArgs
         {
+            SessionName = "Test",
             GameMode = GameMode.AutoHostOrClient,
             Address = NetAddress.Any(),
             Initialized = null,
@@ -142,7 +159,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (runner.IsServer || runner.Topology == SimulationConfig.Topologies.Shared && player == runner.LocalPlayer)
         {
-            Debug.Log("Spawning player");
+            Debug.Log("Spawning Net Player");
             runner.Spawn(networkPlayerPrefab, Vector3.zero, Quaternion.identity, player);
         }
 

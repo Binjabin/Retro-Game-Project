@@ -7094,8 +7094,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1577071615}
   - component: {fileID: 1577071614}
+  - component: {fileID: 1577071616}
   m_Layer: 0
-  m_Name: Player Spawner
+  m_Name: Level Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7128,6 +7129,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1577071616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577071613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectInterest: 0
+  DefaultInterestGroups: []
+  DestroyWhenStateAuthorityLeaves: 0
+  AllowStateAuthorityOverride: 0
+  AoiPositionSource: {fileID: 0}
+  Flags: 2561
+  NetworkGuid:
+    RawGuidValue: 25840423f6b346b6b60091228544d6c9
+  NestedObjects: []
+  NetworkedBehaviours: []
+  SimulationBehaviours:
+  - {fileID: 1577071614}
 --- !u!1 &1853969254
 GameObject:
   m_ObjectHideFlags: 0

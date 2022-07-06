@@ -24,10 +24,10 @@ public class LevelManager : SimulationBehaviour, ISpawned
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
-        if(runner.Topology == SimulationConfig.Topologies.Shared)
+        if (runner.Topology == SimulationConfig.Topologies.Shared)
         {
             Debug.Log("Connected to server, starting player as local player.");
-            
+
         }
         else
         {
@@ -35,29 +35,14 @@ public class LevelManager : SimulationBehaviour, ISpawned
         }
     }
 
-    public void PlayerJoined(PlayerRef player)
-    {
-        Runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, player);
-    }
-    public void PlayerLeft(PlayerRef player)
-    {
-
-    }
-
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-    {
-        if (runner.IsServer)
-        {
-            Debug.Log("Another Player Joined. Spawning Player");
-            runner.Spawn(playerPrefab, GetSpawnPoint(), Quaternion.identity, player);
-        }
-        else Debug.Log("A player joined");
-    }
-
     public void Spawned()
     {
-
+        Debug.Log("Map Spawned");
         NetworkManager.Instance.Session.Map = this;
+        foreach (NetworkPlayer player in NetworkManager.Instance.Players)
+        {
+            SpawnAvatar(player);
+        }
     }
 
     public void SpawnAvatar(NetworkPlayer player)
@@ -67,9 +52,13 @@ public class LevelManager : SimulationBehaviour, ISpawned
         if (player.Object.HasStateAuthority)
         {
             Debug.Log($"Spawning avatar for player {player.Name} with input auth {player.Object.InputAuthority}");
-
+            Debug.Log(player.Object);
+            Debug.Log(player.Object.InputAuthority);
+            Debug.Log(player.playerPrefab);
+            
             PlayerMovement playerObject = Runner.Spawn(player.playerPrefab, Vector3.zero, Quaternion.identity, player.Object.InputAuthority);
-            playerObjects[player] = playerObject;
+            Debug.Log("done spawn");
+            //playerObjects[player] = playerObject;
         }
     }
 
