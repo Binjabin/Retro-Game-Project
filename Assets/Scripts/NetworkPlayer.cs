@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-using Cinemachine;
+
 
 public class NetworkPlayer : NetworkBehaviour
 {
@@ -15,12 +15,7 @@ public class NetworkPlayer : NetworkBehaviour
         
     }
 
-    void SetUpCamera()
-    {
-        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        vcam.LookAt = transform;
-        vcam.Follow = transform;
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -34,7 +29,7 @@ public class NetworkPlayer : NetworkBehaviour
         {
             Local = this;
             NetworkManager.Instance.SetUpPlayer(Object.InputAuthority, this);
-            //SetUpCamera();
+            RPC_SetName(PlayerPrefs.GetString("Name"));
             Debug.Log("Spawn own ship");
         }
         else
@@ -42,6 +37,14 @@ public class NetworkPlayer : NetworkBehaviour
             Debug.Log("Spawn other ship");
         }
 
+    }
+
+
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SetName(NetworkString<_32> name)
+    {
+        Name = name;
     }
 
     public void PlayerLeft(PlayerRef player)

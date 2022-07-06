@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Fusion;
+using Cinemachine;
+
 public class PlayerMovement : NetworkBehaviour
 {
     [SerializeField] TMP_Text usernameText;
@@ -15,15 +17,29 @@ public class PlayerMovement : NetworkBehaviour
     GameManager gameManager;
     bool thrusting;
     float turnDirection;
+    public NetworkPlayer networkPlayer;
+
+    public override void Spawned()
+    {
+        networkPlayer = NetworkManager.Instance.GetPlayer(Object.InputAuthority);
+        usernameText.text = networkPlayer.Name.Value;
+    }
 
     void Start()
     {
-        
+
         //gameManager = FindObjectOfType<GameManager>();
         //gameManager.players.Add(gameObject);
         rb = GetComponent<Rigidbody2D>();
+        SetUpCamera();
     }
 
+    void SetUpCamera()
+    {
+        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
+        vcam.LookAt = transform;
+        vcam.Follow = transform;
+    }
 
     public override void FixedUpdateNetwork()
     {

@@ -105,6 +105,24 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public NetworkPlayer GetPlayer(PlayerRef playerRef = default)
+    {
+        if (!networkRunner)
+        {
+            return null;
+        }
+        else if (playerRef == default)
+        {
+            playerRef = networkRunner.LocalPlayer;
+
+        }
+        Debug.Log("getting" + playerRef);
+        players.TryGetValue(playerRef, out NetworkPlayer gotPlayer);
+
+        Debug.Log(" got player" + gotPlayer);
+        return gotPlayer;
+    }
+
     public void StartSession()
     {
         Connect();
@@ -150,7 +168,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("A player has joined");
+        Debug.Log(player + "has joined");
         if (session == null && IsMaster)
         {
             Debug.Log("Spawning world");
@@ -161,9 +179,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("Spawning Net Player");
             runner.Spawn(networkPlayerPrefab, Vector3.zero, Quaternion.identity, player);
+            
         }
 
-        else Debug.Log("A player joined");
+        else Debug.Log("Not spawning player that has joined");
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)

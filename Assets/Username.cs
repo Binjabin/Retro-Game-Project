@@ -6,12 +6,12 @@ using TMPro;
 public class Username : MonoBehaviour
 {
     TMP_Text usernameText;
-    //PhotonView playerView;
+    PlayerMovement playerMovement;
 
     // Start is called before the first frame update
     void Start()
     {
-        //playerView = GetComponentInParent<PhotonView>();
+        playerMovement = GetComponentInParent<PlayerMovement>();
         usernameText = GetComponent<TMP_Text>();
         usernameText.text = "name";// playerView.Owner.NickName;
     }
@@ -20,7 +20,7 @@ public class Username : MonoBehaviour
     void Update()
     {
         transform.up = Vector3.up;
-        //Vector3 newPosition = new Vector3(playerView.transform.position.x, playerView.transform.position.y + 1, 0f);
-        //transform.position = newPosition;
+        Vector3 newPosition = new Vector3(playerMovement.transform.position.x, playerMovement.transform.position.y + 1, 0f);
+        transform.position = newPosition;
     }
 }
