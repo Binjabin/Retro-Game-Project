@@ -6,9 +6,11 @@ using Fusion;
 
 public class NetworkPlayer : NetworkBehaviour
 {
-    public static NetworkPlayer Local { get; set; }
     [SerializeField] public PlayerMovement playerPrefab;
     [Networked] public NetworkString<_32> Name { get; set; }
+
+    public PlayerMovement playerMovement;
+    public PlayerInputHandler playerInput;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,17 +27,8 @@ public class NetworkPlayer : NetworkBehaviour
 
     public override void Spawned()
     {
-        if (Object.HasInputAuthority)
-        {
-            Local = this;
-            NetworkManager.Instance.SetUpPlayer(Object.InputAuthority, this);
-            RPC_SetName(PlayerPrefs.GetString("Name"));
-            Debug.Log("Spawn own ship");
-        }
-        else
-        {
-            Debug.Log("Spawn other ship");
-        }
+        NetworkManager.Instance.SetUpPlayer(Object.InputAuthority, this);
+        RPC_SetName(PlayerPrefs.GetString("Name"));
 
     }
 

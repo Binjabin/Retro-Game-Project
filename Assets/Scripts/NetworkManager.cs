@@ -188,15 +188,18 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
 
-        if (localPlayerInput == null && NetworkPlayer.Local != null)
+        if(GetPlayer() == null)
         {
-            localPlayerInput = NetworkPlayer.Local.GetComponent<PlayerInputHandler>();
+            return;
+        }
+        if (localPlayerInput == null)
+        {
+            localPlayerInput = GetPlayer().playerInput;
         }
 
         if (localPlayerInput != null)
         {
             input.Set(localPlayerInput.GetNetworkInput());
-            //Debug.Log("Sending Input " + localPlayerInput.GetNetworkInput().thrusting);
         }
     }
 

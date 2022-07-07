@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 8574563384314159608}
   - component: {fileID: 1495778357575004799}
   - component: {fileID: 656378875872946412}
-  - component: {fileID: 8274912620539561240}
+  - component: {fileID: 8402752700350579202}
   m_Layer: 6
   m_Name: PlayerShip
   m_TagString: Player
@@ -322,6 +322,7 @@ MonoBehaviour:
   thrustSpeed: 500
   visuals: {fileID: 8574563384297500616}
   playerIndex: 0
+  cameraPrefab: {fileID: 5616524996809257583, guid: 5fff1f0309d461d4ea9653a72e0b44e7, type: 3}
 --- !u!60 &8574563384314159614
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -424,7 +425,7 @@ MonoBehaviour:
     RotBlendStart: 0.1
     RotBlendEnd: 0.5
     RotTeleportRadians: 1.5
---- !u!114 &8274912620539561240
+--- !u!114 &8402752700350579202
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

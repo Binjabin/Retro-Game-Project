@@ -22,6 +22,8 @@ public class PlayerMovement : NetworkBehaviour
     public override void Spawned()
     {
         networkPlayer = NetworkManager.Instance.GetPlayer(Object.InputAuthority);
+        networkPlayer.playerMovement = this;
+        networkPlayer.playerInput = GetComponent<PlayerInputHandler>();
         usernameText.text = networkPlayer.Name.Value;
     }
 
