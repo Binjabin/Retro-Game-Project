@@ -62,4 +62,13 @@ public class LevelManager : SimulationBehaviour, ISpawned
         }
     }
 
+    public void DespawnAvatar(NetworkPlayer player)
+    {
+        if(playerObjects.TryGetValue(player, out PlayerMovement mov))
+        {
+            Runner.Despawn(mov.Object);
+            playerObjects.Remove(player);
+        }
+    }
+
 }

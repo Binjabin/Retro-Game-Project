@@ -38,9 +38,13 @@ public class PlayerMovement : NetworkBehaviour
 
     void SetUpCamera()
     {
-        var vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        vcam.LookAt = transform;
-        vcam.Follow = transform;
+        if(Object.HasInputAuthority)
+        {
+            var vcam = FindObjectOfType<CinemachineVirtualCamera>();
+            vcam.LookAt = transform;
+            vcam.Follow = transform;
+        }
+        
     }
 
     public override void FixedUpdateNetwork()

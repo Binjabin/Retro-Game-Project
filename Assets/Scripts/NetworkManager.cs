@@ -205,7 +205,16 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        //throw new NotImplementedException();
+        if (players.TryGetValue(player, out NetworkPlayer netPlayerObject))
+        {
+            session.Map.DespawnAvatar(netPlayerObject);
+
+            if(netPlayerObject.Object != null && netPlayerObject.Object.HasStateAuthority)
+            {
+                runner.Despawn(netPlayerObject.Object);
+            }
+            players.Remove(player);
+        }
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
@@ -216,6 +225,28 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log("Shut Down");
+        
+        if(networkRunner != null && networkRunner.gameObject)
+        {
+            Destroy(networkRunner.gameObject);
+        }
+
+        players.Clear();
+        networkRunner = null;
+        session = null;
+
+        if (Application.isPlaying)
+            StartCoroutine(ReturnToMenu());
+    }
+
+    IEnumerator ReturnToMenu()
+    {
+        AsyncOperation waitForSceneLoad = SceneManager.LoadSceneAsync("Loading");
+        while(!waitForSceneLoad.isDone)
+        {
+            yield return null;
+        }
+        ConnectToMainLobby();
     }
 
     public void OnDisconnectedFromServer(NetworkRunner runner)
