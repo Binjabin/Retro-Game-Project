@@ -58,14 +58,16 @@ public class LevelManager : SimulationBehaviour, ISpawned
             
             PlayerMovement playerObject = Runner.Spawn(player.playerPrefab, Vector3.zero, Quaternion.identity, player.Object.InputAuthority);
             Debug.Log("done spawn");
-            //playerObjects[player] = playerObject;
+            playerObjects[player] = playerObject;
         }
     }
 
     public void DespawnAvatar(NetworkPlayer player)
     {
+        Debug.Log("try to get the player");
         if(playerObjects.TryGetValue(player, out PlayerMovement mov))
         {
+            Debug.Log("Despawned player avatar");
             Runner.Despawn(mov.Object);
             playerObjects.Remove(player);
         }

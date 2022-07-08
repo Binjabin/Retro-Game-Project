@@ -116,10 +116,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             playerRef = networkRunner.LocalPlayer;
 
         }
-        Debug.Log("getting" + playerRef);
         players.TryGetValue(playerRef, out NetworkPlayer gotPlayer);
 
-        Debug.Log(" got player" + gotPlayer);
         return gotPlayer;
     }
 
@@ -205,13 +203,16 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        
         if (players.TryGetValue(player, out NetworkPlayer netPlayerObject))
         {
+            Debug.Log("A player has left!");
             session.Map.DespawnAvatar(netPlayerObject);
 
             if(netPlayerObject.Object != null && netPlayerObject.Object.HasStateAuthority)
             {
                 runner.Despawn(netPlayerObject.Object);
+                Debug.Log("Kill the plaer's object!");
             }
             players.Remove(player);
         }

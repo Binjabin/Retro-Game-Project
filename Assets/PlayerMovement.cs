@@ -24,7 +24,7 @@ public class PlayerMovement : NetworkBehaviour
         networkPlayer = NetworkManager.Instance.GetPlayer(Object.InputAuthority);
         networkPlayer.playerMovement = this;
         networkPlayer.playerInput = GetComponent<PlayerInputHandler>();
-        usernameText.text = networkPlayer.Name.Value;
+        
     }
 
     void Start()
@@ -49,7 +49,8 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if(GetInput(out NetworkInputData data))
+        usernameText.text = networkPlayer.Name.Value;
+        if (GetInput(out NetworkInputData data))
         {
             thrusting = data.thrustingNet;
             turnDirection = data.turnInputNet;
@@ -73,19 +74,6 @@ public class PlayerMovement : NetworkBehaviour
         turnDirection = inTurn;
     }
 
-    void DoWeaponry()
-    {
-        //if mouse button pressed:
-        //if energy is more than 0:
-        //turn particle system on
-        //else:
-        //turn particle system off
-        //else 
-        //turn particle system off
-
-
-        //update energy bar ui with energy value
-    }
 
     public void StopMovement()
     {
