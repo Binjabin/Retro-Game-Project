@@ -24,7 +24,18 @@ public class PlayerMovement : NetworkBehaviour
         networkPlayer = NetworkManager.Instance.GetPlayer(Object.InputAuthority);
         networkPlayer.playerMovement = this;
         networkPlayer.playerInput = GetComponent<PlayerInputHandler>();
+        Debug.Log(networkPlayer.Name.Value);
+        if(networkPlayer.Name.Value == null || networkPlayer.Name.Value == "")
+        {
+            usernameText.text = "Guest";
+        }
+        else
+        {
+            usernameText.text = networkPlayer.Name.Value;
+        }
+        Debug.Log("set name text");
         
+
     }
 
     void Start()
@@ -49,7 +60,7 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        usernameText.text = networkPlayer.Name.Value;
+        
         if (GetInput(out NetworkInputData data))
         {
             thrusting = data.thrustingNet;

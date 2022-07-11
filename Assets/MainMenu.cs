@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
     {
         loadingScreen.SetActive(true);
         joinMenu.SetActive(false);
+        PlayerPrefs.DeleteKey("Name");
         
     }
 

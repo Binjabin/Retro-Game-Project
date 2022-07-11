@@ -27,8 +27,17 @@ public class NetworkPlayer : NetworkBehaviour
 
     public override void Spawned()
     {
+        
+        Debug.Log("Get name");
+        if(PlayerPrefs.HasKey("Name"))
+        {
+            RPC_SetName(PlayerPrefs.GetString("Name"));
+        }
+        else
+        {
+            RPC_SetName(null);
+        }
         NetworkManager.Instance.SetUpPlayer(Object.InputAuthority, this);
-        RPC_SetName(PlayerPrefs.GetString("Name"));
 
     }
 

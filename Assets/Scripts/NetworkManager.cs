@@ -23,8 +23,11 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkSession session;
     NetworkSceneManagerBase loader;
     string currentLobbyID;
-
+    public NetworkPlayer hostNetworkPlayer;
     public bool IsMaster => networkRunner != null && (networkRunner.IsServer || networkRunner.IsSharedModeMasterClient);
+
+    
+
 
     public static NetworkManager Instance
     {
@@ -35,6 +38,9 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             return instance;
         }
     }
+
+    
+
 
     public NetworkSession Session
     {
@@ -65,10 +71,18 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    void RPC_ClaimHost(NetworkPlayer player)
+    {
+        hostNetworkPlayer = player;
+    }
+
     public void Start()
     {
         ConnectToMainLobby();
     }
+
+
 
     public async void ConnectToMainLobby()
     {
@@ -98,6 +112,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         players[playerRef] = player;
         player.transform.SetParent(networkRunner.transform);
         Debug.Log(player);
+        if(IsMaster)
+        {
+            RPC_ClaimHost(player);
+        }
         if(session.Map != null)
         {
             Debug.Log("spawning player avater");
@@ -133,7 +151,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = GameMode.AutoHostOrClient,
             Address = NetAddress.Any(),
             Initialized = null,
-            SceneManager = loader
+            SceneManager = loader,
+            PlayerCount = 16
         }) ;
     }
 
@@ -238,6 +257,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (Application.isPlaying)
             StartCoroutine(ReturnToMenu());
+    }
+
+    public void Disconnect()
+    {
+        if (networkRunner != null)
+        {
+            networkRunner.Shutdown();
+        }
     }
 
     IEnumerator ReturnToMenu()
