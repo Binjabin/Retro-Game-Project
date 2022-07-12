@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class WeaponShooting : MonoBehaviour
+using Fusion;
+public class WeaponShooting : NetworkBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] GameObject collisionEffect;
     List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
     ParticleSystem particles;
-
     [SerializeField] float maxEnergy;
     [SerializeField] float energyUsePerSecond;
     float currentEnergy;
@@ -17,16 +17,29 @@ public class WeaponShooting : MonoBehaviour
     [SerializeField] float energyRegenPerSecond;
     [SerializeField] 
     bool isShooting;
-
+    bool isMine;
+    NetworkPlayer myPlayer;
+    NetworkPlayer thisPlayer;
     [SerializeField] Slider slider;
 
-    private void Start()
+    public override void Spawned()
     {
         particles = GetComponent<ParticleSystem>();
         currentEnergy = maxEnergy;
+        myPlayer = NetworkManager.Instance.GetPlayer();
+        thisPlayer = GetComponentInParent<PlayerMovement>().networkPlayer;
+        if (myPlayer == thisPlayer)
+        {
+            isMine = true;
+        }
+        else
+        {
+            isMine = false;
+        }
+
     }
     private void OnParticleCollision(GameObject other)
-    {;
+    {
         int collisionEventCount = particles.GetCollisionEvents(other, collisionEvents);
         int i = 0;
         while(i < collisionEventCount)
@@ -47,34 +60,90 @@ public class WeaponShooting : MonoBehaviour
         Instantiate(collisionEffect, location, rotation);
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    void ToggleShooting(bool isShootingNow, NetworkPlayer playerToToggle)
+    {
+        if(thisPlayer == playerToToggle && myPlayer != thisPlayer)
+        {
+            isShooting = isShootingNow;
+        }
+    }
+
     private void Update()
     {
-        
-        if(currentEnergy < 0.01f)
+        if (isMine)
         {
-            isShooting = Input.GetKey(KeyCode.Mouse0);
-        }
-        else
-        {
-            isShooting = false;
-        }
-        
-        if(isShooting)
-        {
-            particles.Play();
-            timeSinceShoot = 0f;
-            currentEnergy -= Time.deltaTime * energyUsePerSecond;
-        }
-        else
-        {
-            particles.Stop();
-            timeSinceShoot += Time.deltaTime;
-            if(timeSinceShoot > timeUntilRegenStart)
+            if (currentEnergy > 0f)
             {
-                currentEnergy += Time.deltaTime * energyRegenPerSecond;
+                isShooting = Input.GetKey(KeyCode.Mouse0);
+            }
+            else
+            {
+                isShooting = false;
             }
 
+            if (isShooting)
+            {
+
+                Debug.Log("Shooting");
+                if (!particles.isPlaying)
+                {
+                    particles.Play();
+                    ToggleShooting(true, myPlayer);
+                }
+
+                timeSinceShoot = 0f;
+                currentEnergy -= Time.deltaTime * energyUsePerSecond;
+            }
+            else
+            {
+                Debug.Log("Stop Shooting");
+                if (particles.isPlaying)
+                {
+                    particles.Stop();
+                    ToggleShooting(false, myPlayer);
+                }
+
+                timeSinceShoot += Time.deltaTime;
+                if (timeSinceShoot > timeUntilRegenStart)
+                {
+                    currentEnergy += Time.deltaTime * energyRegenPerSecond;
+                }
+
+            }
+            currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
         }
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+        else
+        {
+            if (isShooting)
+            {
+                Debug.Log("Shooting");
+                if (!particles.isPlaying)
+                {
+                    particles.Play();
+
+                }
+
+                timeSinceShoot = 0f;
+                currentEnergy -= Time.deltaTime * energyUsePerSecond;
+            }
+            else
+            {
+                Debug.Log("Stop Shooting");
+                if (particles.isPlaying)
+                {
+                    particles.Stop();
+
+                }
+
+                timeSinceShoot += Time.deltaTime;
+                if (timeSinceShoot > timeUntilRegenStart)
+                {
+                    currentEnergy += Time.deltaTime * energyRegenPerSecond;
+                }
+
+            }
+        }
+        
     }
 }
